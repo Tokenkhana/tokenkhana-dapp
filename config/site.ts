@@ -1,68 +1,68 @@
 export type SiteConfig = typeof siteConfig;
 
 export const siteConfig = {
-  name: "Next.js + NextUI",
-  description: "Make beautiful websites regardless of your design experience.",
+  name: "Tokenkhana",
+  description: "Create, launch, update and manage tokens across multiple EVMs within seconds.",
   navItems: [
     {
       label: "Home",
       href: "/",
     },
     {
-      label: "Docs",
-      href: "/docs",
+      label: "Create Token",
+      href: "/create",
     },
     {
-      label: "Pricing",
-      href: "/pricing",
+      label: "Manage Tokens",
+      href: "/manage",
     },
-    {
-      label: "Blog",
-      href: "/blog",
-    },
-    {
-      label: "About",
-      href: "/about",
-    },
+    // {
+    //   label: "Blog",
+    //   href: "/blog",
+    // },
+    // {
+    //   label: "About",
+    //   href: "/about",
+    // },
   ],
   navMenuItems: [
     {
-      label: "Profile",
-      href: "/profile",
+      label: "Create Token",
+      href: "/create",
     },
     {
-      label: "Dashboard",
-      href: "/dashboard",
+      label: "Manage Token",
+      href: "/manage",
     },
-    {
-      label: "Projects",
-      href: "/projects",
-    },
-    {
-      label: "Team",
-      href: "/team",
-    },
-    {
-      label: "Calendar",
-      href: "/calendar",
-    },
-    {
-      label: "Settings",
-      href: "/settings",
-    },
-    {
-      label: "Help & Feedback",
-      href: "/help-feedback",
-    },
-    {
-      label: "Logout",
-      href: "/logout",
-    },
+    // {
+    //   label: "Projects",
+    //   href: "/projects",
+    // },
+    // {
+    //   label: "Team",
+    //   href: "/team",
+    // },
+    // {
+    //   label: "Calendar",
+    //   href: "/calendar",
+    // },
+    // {
+    //   label: "Settings",
+    //   href: "/settings",
+    // },
+    // {
+    //   label: "Help & Feedback",
+    //   href: "/help-feedback",
+    // },
+    // {
+    //   label: "Logout",
+    //   href: "/logout",
+    // },
   ],
   links: {
-    github: "https://github.com/nextui-org/nextui",
-    twitter: "https://twitter.com/getnextui",
-    docs: "https://nextui.org",
+    github: "https://github.com/Tokenkhana/tokenkhana-dapp",
+    twitter: "https://x.com/mbilalmotiwala",
+    docs: "https://github.com/Tokenkhana/tokenkhana-dapp/wiki",
     discord: "https://discord.gg/9b6yyZKmH4",
     sponsor: "https://patreon.com/jrgarciadev",
   },

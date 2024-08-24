@@ -6,19 +6,16 @@ import { button as buttonStyles } from "@nextui-org/theme";
 import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
+import { TbSquareRoundedPlusFilled } from "react-icons/tb";
 
 export default function Home() {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl text-center justify-center">
-        <h1 className={title()}>Make&nbsp;</h1>
-        <h1 className={title({ color: "violet" })}>beautiful&nbsp;</h1>
-        <br />
-        <h1 className={title()}>
-          websites regardless of your design experience.
-        </h1>
+        <h1 className={title()}>The Ultimate Token Management Tool&nbsp;</h1>
+        {/* <h1 className={title({ color: "violet" })}>EVMs&nbsp;</h1> */}
         <h2 className={subtitle({ class: "mt-4" })}>
-          Beautiful, fast and modern React UI library.
+          Create, launch, and manage ERC20 tokens across 20+ EVM blockchains at no cost with Tokenkhana.
         </h2>
       </div>
 
@@ -30,9 +27,10 @@ export default function Home() {
             radius: "full",
             variant: "shadow",
           })}
-          href={siteConfig.links.docs}
+          href={"/create"}
         >
-          Documentation
+          <TbSquareRoundedPlusFilled size={20} />
+          Get Started
         </Link>
         <Link
           isExternal
@@ -40,17 +38,17 @@ export default function Home() {
           href={siteConfig.links.github}
         >
           <GithubIcon size={20} />
-          GitHub
+          Visit Documentation
         </Link>
       </div>
 
-      <div className="mt-8">
+      {/* <div className="mt-8">
         <Snippet hideCopyButton hideSymbol variant="bordered">
           <span>
             Get started by editing <Code color="primary">app/page.tsx</Code>
           </span>
         </Snippet>
-      </div>
+      </div> */}
     </section>
   );
 }
