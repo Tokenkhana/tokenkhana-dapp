@@ -7,17 +7,21 @@ import { siteConfig } from "@/config/site";
 import { title, subtitle } from "@/components/primitives";
 import { GithubIcon } from "@/components/icons";
 import { TbSquareRoundedPlusFilled } from "react-icons/tb";
+import { Carousel } from "@/components/carousel";
 
 export default function Home() {
+
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl text-center justify-center">
-        <h1 className={title()}>The Ultimate Token Management Tool&nbsp;</h1>
-        {/* <h1 className={title({ color: "violet" })}>EVMs&nbsp;</h1> */}
+        <h1 className={title()}>The Ultimate Token Management Tool</h1>
         <h2 className={subtitle({ class: "mt-4" })}>
-          Create, launch, and manage ERC20 tokens across 20+ EVM blockchains at no cost with Tokenkhana.
+          Create, launch, and manage ERC20 tokens across 10+ EVM blockchains at no cost with Tokenkhana.
         </h2>
       </div>
+
+      {/* Add Carousel in the future */}
+      {/* <Carousel className="w-full my-5"/> */}
 
       <div className="flex gap-3">
         <Link
@@ -38,17 +42,9 @@ export default function Home() {
           href={siteConfig.links.github}
         >
           <GithubIcon size={20} />
-          Visit Documentation
+          Visit Github
         </Link>
       </div>
-
-      {/* <div className="mt-8">
-        <Snippet hideCopyButton hideSymbol variant="bordered">
-          <span>
-            Get started by editing <Code color="primary">app/page.tsx</Code>
-          </span>
-        </Snippet>
-      </div> */}
     </section>
   );
 }
