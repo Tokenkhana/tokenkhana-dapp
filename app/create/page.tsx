@@ -1,6 +1,6 @@
 "use client";
 import { title } from "@/components/primitives";
-import { useState } from "react";
+import { Fragment, useState } from "react";
 import { Input } from "@nextui-org/react";
 import {Select, SelectItem} from "@nextui-org/react";
 
@@ -35,31 +35,62 @@ export default function AboutPage() {
     return totalSupply > 0;
   }
 
+  // Creating the submit function (pending)
+
+  // Contract Template.
+  const baseContractTemplate = `
+// SPDX-License-Identifier: MIT
+// Created using Tokenkhana (https://github.com/Tokenkhana/tokenkhana-dapp)
+pragma solidity ${symbol};
+
+contract ${name}`.trim();
+
+  // Line break handler.
+  const preserveLinebreaks = (str: string) => {
+    return str.split('\n').map((line, index, array) => (
+      <Fragment key={index}>
+        {line.replace(/^\s+/, (match) => '\u00A0'.repeat(match.length))}
+        {index < array.length - 1 && <br />}
+      </Fragment>
+    ));
+  }
+
   return (
     // Main Page Section
     <div className="w-full text-center">
       {/* Page Title */}
       <h1 className={title({ size: "sm" })}>Create Your Token</h1>
-      {/* Creating the form wrapper*/}
-      <form>
-        {/* Name and Symbol Inputs of the Token */}
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mt-6">
-          <Input isRequired type="text" label="Token Name" placeholder="MyToken" size="md" className="text-left" value={name} onChange={e => setName(e.target.value)} />
-          <Input isRequired type="text" label="Token Symbol" placeholder="TKN" size="md" className="text-left" value={symbol} onChange={e => setSymbol(e.target.value)} />
-        </div>
+      {/* Splitting the screen into two parts: the form and the code preview which is only visible on larger screens. */}
+      <div className="flex flex-col lg:flex-row gap-8 w-full">
+        {/* Creating the form wrapper*/}
+        <form className="w-full">
+          {/* Name and Symbol Inputs of the Token */}
+          <div className="flex w-full flex-wrap md:flex-nowrap gap-4 mt-6">
+            <Input isRequired type="text" label="Token Name" placeholder="MyToken" size="md" className="text-left" value={name} onChange={e => setName(e.target.value)} />
+            <Input isRequired type="text" label="Token Symbol" placeholder="TKN" size="md" className="text-left" value={symbol} onChange={e => setSymbol(e.target.value)} />
+          </div>
 
-        <div className="flex w-full flex-wrap md:flex-nowrap gap-4 my-5">
-          {/* Setting the supply and ensuring the supply cannot be a negative number. */}
-          <Input isRequired type="number" label="Total Supply" placeholder="MyToken" size="md" className="text-left" value={totalSupply.toString()} onChange={e => setTotalSupply(Number(e.target.value) > 0 ? Number(e.target.value) : 0)} />
+          <div className="flex w-full flex-wrap md:flex-nowrap gap-4 my-5">
+            {/* Setting the supply and ensuring the supply cannot be a negative number. */}
+            <Input isRequired type="number" label="Total Supply" placeholder="MyToken" size="md" className="text-left" value={totalSupply.toString()} onChange={e => setTotalSupply(Number(e.target.value) > 0 ? Number(e.target.value) : 0)} />
 
-          {/* Selecting the Chain */}
-          <Select isRequired label="Chain" placeholder="Select a chain" size="md">
-            {chains.map((chain) => (
-              <SelectItem key={chain.key} value={chain.value}>{chain.label}</SelectItem>
-            ))}
-          </Select>
+            {/* Selecting the Chain */}
+            <Select isRequired label="Chain" placeholder="Select a chain" size="md">
+              {chains.map((chain) => (
+                <SelectItem key={chain.key} value={chain.value}>{chain.label}</SelectItem>
+              ))}
+            </Select>
+          </div>
+        </form>
+
+        {/* Creating the code preview*/}
+        <div className="w-full flex items-center justify-center text-left">
+          <div className="w-full mt-5 p-6 rounded-lg bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-300 font-[monospace] text-left text-nowrap overflow-x-scroll">
+            {/* Adding the code to show within the code preview with the line breaks as needed. */}
+            {preserveLinebreaks(baseContractTemplate)}
+          </div>
         </div>
-      </form>
+      </div>
     </div>
   );
 }
