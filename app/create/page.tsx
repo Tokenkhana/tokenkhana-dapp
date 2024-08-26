@@ -2,16 +2,28 @@
 import { title } from "@/components/primitives";
 import { Fragment, useState } from "react";
 import { Input } from "@nextui-org/react";
-import {Accordion, AccordionItem, Select, SelectItem} from "@nextui-org/react";
+import { Accordion, AccordionItem, Select, SelectItem, Switch } from "@nextui-org/react";
 
-import { FaLeaf, FaFireAlt, FaPauseCircle, FaExchangeAlt, FaLightbulb } from "react-icons/fa";
+import { FaLeaf, FaFireAlt, FaPauseCircle, FaExchangeAlt, FaBong } from "react-icons/fa";
+import { PiWarningDuotone } from "react-icons/pi";
+import { GiArmorUpgrade } from "react-icons/gi";
 
 export default function AboutPage() {
   // Creating the variables for our form inputs.
   const [name, setName] = useState("");
   const [symbol, setSymbol] = useState("");
-  const [totalSupply, setTotalSupply] = useState(0);
+  const [initialSupply, setInitialSupply] = useState(0);
   const [chain, setChain] = useState({key: "ethereum", label: "Ethereum", value: "1"});
+
+  const [isMintable, setIsMintable] = useState(false);
+  const [isLimitedSupply, setIsLimitedSupply] = useState(false);
+  const [totalSupply, setTotalSupply] = useState(0);
+
+  const [isBurnable, setIsBurnable] = useState(false);
+  const [isPausable, setIsPausable] = useState(false);
+  const [isPermissable, setIsPermissable] = useState(false);
+  const [isFlashMintable, setIsFlashMintable] = useState(false);
+
   const [isUpgradable, setIsUpgradable] = useState(false);
 
   // Creating the list of chains available.
@@ -42,11 +54,21 @@ export default function AboutPage() {
 pragma solidity 0.8.20;
 
 import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
+import "@openzeppelin/contracts/access/Ownable.sol";
 
-contract ${name ? name : "{{tokenName}}"} is ERC20 {
-  constructor() ERC20("${name ? name : "{{tokenName}}"}", "${symbol ? symbol : "{{tokenSymbol}}"}") ${!totalSupply ? "{}" : `{
-    _mint(msg.sender, ${totalSupply} * 10 ** decimals());
+contract ${name ? name : "{{tokenName}}"} is ERC20, Ownable { ${isLimitedSupply && totalSupply > 0 ? `
+  uint256 public constant MAX_SUPPLY = ${totalSupply} * 10 ** decimals(); // Total maximum supply of tokens.
+  ` : ""}
+  constructor(address initialOwner)
+    ERC20("${name ? name : "{{tokenName}}"}", "${symbol ? symbol : "{{tokenSymbol}}"}")
+  ${!initialSupply ? "{}" : `{
+    _mint(msg.sender, ${initialSupply} * 10 ** decimals());
   }`}
+  ${isMintable ? `
+  function mint(address to, uint256 amount) public onlyOwner {
+    ${isLimitedSupply && totalSupply > 0 ? `require(totalSupply() + (amount * 10 ** decimals())  <= MAX_SUPPLY, "Minting would exceed max supply");
+    _mint(to, amount * 10 ** decimals());` : `_mint(to, amount * 10 ** decimals());`}
+  }` : ""}
 }`.trim();
 
   // Line break handler.
@@ -61,11 +83,12 @@ contract ${name ? name : "{{tokenName}}"} is ERC20 {
 
   // Creating the safety checks for our forms.
   const isValidForSubmission = () => {
-    return name && symbol && totalSupply && totalSupply > 0;
+    return name && symbol && initialSupply && initialSupply >= 0;
   }
 
+  // Creating the supply validity check.
   const supplyIsValid = () => {
-    return totalSupply > 0;
+    return initialSupply >= 0;
   }
 
   const defaultContent = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.";
@@ -89,7 +112,7 @@ contract ${name ? name : "{{tokenName}}"} is ERC20 {
 
           <div className="flex w-full flex-wrap md:flex-nowrap gap-4 my-5">
             {/* Setting the supply and ensuring the supply cannot be a negative number. */}
-            <Input isRequired type="number" label="Total Supply" placeholder="MyToken" size="md" className="text-left" description="Minted to your wallet on creation." value={totalSupply.toString()} onChange={e => setTotalSupply(Number(e.target.value) > 0 ? Number(e.target.value) : 0)} />
+            <Input isRequired type="number" label="Initial Supply" placeholder="1000000" size="md" className="text-left" description="Minted to your wallet on creation." value={initialSupply.toString()} onChange={e => setInitialSupply(Number(e.target.value) > 0 ? Number(e.target.value) : 0)} />
 
             {/* Selecting the Chain */}
             <Select isRequired label="Chain" placeholder="Select an option" size="md" description="Select chain to deploy your token." className="text-left">
@@ -104,22 +127,49 @@ contract ${name ? name : "{{tokenName}}"} is ERC20 {
             <p className="text-center text-zinc-500 text-sm">These are optional yet add advanced features to your token.</p>
           </div>
 
-          <div className="flex w-full flex-wrap md:flex-nowrap gap-4 my-5">
+          <div className="flex w-full flex-col flex-wrap md:flex-nowrap gap-4 my-5">
             {/* Creating a section for additional features that users can use to create more advanced token contracts. */}
             <Accordion variant="splitted" selectionMode="multiple">
-              <AccordionItem key="1" aria-label="Mintable" title="Mintable" subtitle="Admin accounts will be allowed to mint more tokens." startContent={<FaLeaf size={25} />} >
+              <AccordionItem key="1" aria-label="Mintable" title={<span className="font-semibold">Mintable</span>} subtitle="Your wallet will be allowed to mint more tokens in the future." startContent={<FaLeaf size={25} />} className="text-left">
+                <div className="w-full flex flex-row pl-9 pr-4 pb-5 gap-2 items-center justify-center">
+                  <div className="w-full flex flex-row">
+                    Enable Minting <Switch size="sm" isSelected={isMintable} onValueChange={setIsMintable} className="ml-2"/>
+                  </div>
+                  <div className="w-full flex flex-row justify-end">
+                    Limited Supply <Switch size="sm" isSelected={isLimitedSupply} onValueChange={setIsLimitedSupply} className="ml-2" isDisabled={!isMintable} />
+                  </div>
+                </div>
+                {isMintable ? (
+                  isLimitedSupply ? (
+                    <div className="w-full flex flex-row pl-9 pr-4 pb-5 gap-2 items-center justify-center">
+                      <Input isRequired type="number" label="Total Supply" placeholder="1000000" size="md" className="text-left" description="This is the total amount of tokens that can ever minted." value={totalSupply.toString()} onChange={e => setTotalSupply(Number(e.target.value) > 0 ? Number(e.target.value) : 0)} />
+                    </div>
+                  ) : (
+                    <div className="w-full flex px-9 pb-5">
+                      This token has an unlimited supply and more tokens can be minted at any time by your wallet.
+                    </div>
+                  )
+                ) : (
+                  <div className="w-full flex px-9 pb-5">
+                    This token has an limited supply of {initialSupply} and no more tokens can be minted.
+                  </div>
+                )}
+              </AccordionItem>
+              <AccordionItem key="2" aria-label="Burnable" title={<span className="font-semibold">Burnable</span>} subtitle="Allows holders to burn their tokens." startContent={<FaFireAlt size={25} />} className="text-left">
+                <div className="w-full flex px-9 pb-5">
+                  {defaultContent}
+                </div>
+              </AccordionItem>
+              <AccordionItem key="3" aria-label="Pausable" title={<span className="font-semibold">Pausable</span>} subtitle="Your wallet will be able to pause all transfers." startContent={<FaPauseCircle size={25} />} className="text-left">
                 {defaultContent}
               </AccordionItem>
-              <AccordionItem key="2" aria-label="Burnable" title="Burnable" subtitle="Allows holders to burn their tokens." startContent={<FaFireAlt size={25} />}>
+              <AccordionItem key="4" aria-label="Upgradable" title={<span className="font-semibold">Upgradable</span>} subtitle="Your wallet will be able to update and upgrade the token contract in the future." startContent={<GiArmorUpgrade size={25} />} className="text-left">
                 {defaultContent}
               </AccordionItem>
-              <AccordionItem key="3" aria-label="Pausable" title="Pausable" subtitle="Admin accounts will be able to pause all transfers." startContent={<FaPauseCircle size={25} />}>
+              <AccordionItem key="5" aria-label="Permissable" title={<span className="font-semibold">Permissable</span>} subtitle="Allow token holders to authorise third party gas-free transfers." startContent={<FaExchangeAlt size={25} />} className="text-left">
                 {defaultContent}
               </AccordionItem>
-              <AccordionItem key="4" aria-label="Permissable" title="Permissable" subtitle="Allow token holders to authorise third party gas-free transfers." startContent={<FaExchangeAlt size={25} />}>
-                {defaultContent}
-              </AccordionItem>
-              <AccordionItem key="5" aria-label="Flash Minting" title="Flash Minting" subtitle="Allows built-in non-collateral lending as long as tokens returned within the same transaction." startContent={<FaLightbulb size={25} />}>
+              <AccordionItem key="6" aria-label="Flash Minting" title={<span className="flex font-semibold items-center">Flash Minting <PiWarningDuotone className="ml-1.5"/></span>} subtitle="Allows built-in non-collateral lending as long as tokens returned within the same transaction." startContent={<FaBong size={25} />} className="text-left">
                 {defaultContent}
               </AccordionItem>
             </Accordion>
