@@ -53,10 +53,11 @@ export default function AboutPage() {
 // Generated on ${getCurrentDate()} with Tokenkhana and OpenZeppelin Contracts.
 pragma solidity 0.8.20;
 
-import "@openzeppelin/contracts/token/ERC20/ERC20.sol";
-import "@openzeppelin/contracts/access/Ownable.sol";
+import "@openzeppelin/contracts/access/Ownable.sol"; // Base Ownable contract.
+import "@openzeppelin/contracts/token/ERC20/ERC20.sol"; // Base ERC20 contract. ${isBurnable ? `
+import "@openzeppelin/contracts/token/ERC20/extensions/ERC20Burnable.sol"; // Base ERC20Burnable contract.` : ""}
 
-contract ${name ? name : "{{tokenName}}"} is ERC20, Ownable { ${isLimitedSupply && totalSupply > 0 ? `
+contract ${name ? name : "{{tokenName}}"} is ERC20${isBurnable ? `, ERC20Burnable,`: ","} Ownable { ${isLimitedSupply && totalSupply > 0 ? `
   uint256 public constant MAX_SUPPLY = ${totalSupply} * 10 ** decimals(); // Total maximum supply of tokens.
   ` : ""}
   constructor(address initialOwner)
@@ -156,9 +157,20 @@ contract ${name ? name : "{{tokenName}}"} is ERC20, Ownable { ${isLimitedSupply 
                 )}
               </AccordionItem>
               <AccordionItem key="2" aria-label="Burnable" title={<span className="font-semibold">Burnable</span>} subtitle="Allows holders to burn their tokens." startContent={<FaFireAlt size={25} />} className="text-left">
-                <div className="w-full flex px-9 pb-5">
-                  {defaultContent}
+                <div className="w-full flex flex-row pl-9 pr-4 pb-5 gap-2 items-center justify-center">
+                  <div className="w-full flex flex-row">
+                    Enable Burning <Switch size="sm" isSelected={isBurnable} onValueChange={setIsBurnable} className="ml-2"/>
+                  </div>
                 </div>
+                {isBurnable ? (
+                  <div className="w-full flex px-9 pb-5">
+                    This token may be burned by holders easily using the built-in burn function.
+                  </div>
+                ) : (
+                  <div className="w-full flex px-9 pb-5">
+                    This token may be burned by holders by manually transferring tokens to the burn address.
+                  </div>
+                )}
               </AccordionItem>
               <AccordionItem key="3" aria-label="Pausable" title={<span className="font-semibold">Pausable</span>} subtitle="Your wallet will be able to pause all transfers." startContent={<FaPauseCircle size={25} />} className="text-left">
                 {defaultContent}
