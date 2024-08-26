@@ -12,7 +12,7 @@ import { Carousel } from "@/components/carousel";
 export default function Home() {
 
   return (
-    <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
+    <section className="flex flex-col items-center justify-center gap-4">
       <div className="inline-block max-w-xl text-center justify-center">
         <h1 className={title()}>The Ultimate Token Management Tool</h1>
         <h2 className={subtitle({ class: "mt-4" })}>

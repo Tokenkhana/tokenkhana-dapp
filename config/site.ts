@@ -8,20 +8,20 @@ export const siteConfig = {
       label: "Create",
       href: "/create",
     },
-    {
-      label: "Manage",
-      href: "/manage",
-    },
+    // {
+    //   label: "Manage",
+    //   href: "/manage",
+    // },
   ],
   navMenuItems: [
     {
       label: "Create",
       href: "/create",
     },
-    {
-      label: "Manage",
-      href: "/manage",
-    },
+    // {
+    //   label: "Manage",
+    //   href: "/manage",
+    // },
   ],
   links: {
     github: "https://github.com/Tokenkhana/tokenkhana-dapp",
